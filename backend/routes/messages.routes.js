@@ -1,9 +1,8 @@
-import express from 'express'
+import express from 'express';
 
+const router = express.Router();
 
-const router = express.Router()
+router.post('/send/:id');
+router.get('/:id');
 
-router.post('/send/:id')
-router.get('/:id')
-
-export default router
+export default router;

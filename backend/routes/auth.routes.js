@@ -1,29 +1,13 @@
-import express from 'express'
-import passport from 'passport'
+import express from 'express';
 
-import { login } from '../controllers/auth.controller.js'
-import github from '../utils/github'
+import {
+  checkUserInDB,
+  getGithubToken,
+  getUserData
+} from '../controllers/auth.controller.js';
 
-passport.use(github)
+const router = express.Router();
 
-const router = express.Router()
+router.post('/', getGithubToken, getUserData, checkUserInDB);
 
-router.use(passport.initialize())
-router.use(passport.session())
-
-passport.serializeUser(function(user, done) {
-	done(null, user)
-})
-
-passport.deserializeUser(function(obj, done) {
-	done(null, obj)
-})
-
-router.get('/', function (req, res) {
-	res.render('index', {user: req.user})
-})
-// router.post('/login', login)
-// router.post('/signup', signup)
-// router.post('/logout', logout)
-
-export default router
+export default router;

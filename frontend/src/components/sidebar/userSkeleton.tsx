@@ -7,7 +7,7 @@ const UserSkeleton = () => {
         <div className="animate-pulse rounded-md bg-muted h-4 w-[200px]" />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default UserSkeleton
+export default UserSkeleton;

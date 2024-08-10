@@ -1,9 +1,9 @@
-import express from 'express'
+import express from 'express';
 
-import { getUsersForSidebar } from '../controllers/user.controller'
+import { getUsersForSidebar } from '../controllers/user.controller.js';
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', getUsersForSidebar)
+router.get('/', getUsersForSidebar);
 
-export default router
+export default router;

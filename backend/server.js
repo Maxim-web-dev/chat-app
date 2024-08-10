@@ -1,61 +1,50 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import ejs from 'ejs'
-import session from 'express-session'
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
 
-import connectToDB from './db/connectToDb.js'
-import authRoutes from './routes/auth.routes.js'
-import accountRouter from './routes/auth.routes.js'
+import connectToDB from './db/connectToDb.js';
+import authRoutes from './routes/auth.routes.js';
+import userRoutes from './routes/user.routes.js';
+import messagesRoutes from './routes/messages.routes.js';
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
+const app = express();
 
-const PORT = process.env.PORT || 1111
+app.use(cors({
+	origin: 'http://localhost:5173',
+	credentials: true
+}));
+app.use(express.json());
 
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
+const PORT = process.env.PORT || 1111;
 
-app.use(
-	session({
-		secret: process.env.SESSION_SECRET,
-		resave: false,
-		saveUninitialized: false
-	})
-)
-app.get('/', (req, res) => {
-	res.redirect('/auth')
-})
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/messages', messagesRoutes);
 
-app.use('/auth', authRoutes)
-app.use('/account', accountRouter)
-
-app.use('/api/auth', authRoutes)
-app.use('/api/users', userRoutes)
-app.use('/api/messages', messagesRoutes)
-
-process.on('uncaughtException', err => {
-	console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-	console.log(err.name, err.message);
-	process.exit(1);
+process.on('uncaughtException', (err) => {
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  console.log(err.name, err.message);
+  process.exit(1);
 });
 
-process.on('unhandledRejection', err => {
-	console.log('UNHANDLED REJECTION! 💥 Shutting down...');
-	console.log(err.name, err.message);
-	server.close(() => {
-		process.exit(1);
-	});
+process.on('unhandledRejection', (err) => {
+  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });
 
 process.on('SIGTERM', () => {
-	console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
-	server.close(() => {
-		console.log('💥 Process terminated!');
-	});
+  console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
+  server.close(() => {
+    console.log('💥 Process terminated!');
+  });
 });
 
-app.listen(PORT, (req, res) => {
-	connectToDB()
-	console.log(`server running at port ${PORT}`);
-})
+app.listen(PORT, () => {
+  connectToDB();
+  console.log(`server running at port ${PORT}`);
+});
