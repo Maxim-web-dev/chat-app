@@ -54,21 +54,37 @@ export const checkUserInDB = async (req, res) => {
         avatarUrl: userDataFromGithub.avatar_url,
         github_id: userDataFromGithub.id,
         name: userDataFromGithub.name,
-        username: userDataFromGithub.login
+        username: userDataFromGithub.login,
+        token
       });
       if (newUser) {
         await newUser.save();
-        return res.json({ userDataFromGithub, token }).redirect('/home');
+        return res.json({ userDataFromGithub, token })
       } else {
         return res.status(400).json({ error: 'Invalid user data' });
       }
     }
     // if user is found
     const { chats, users } = getUsersForSidebar(user);
-
-    return res.json({ chats, users, userDataFromGithub, token }).redirect('/home')
+    await User.updateOne({ github_id }, { $set: { token } });
+    return res.json({ chats, users, userDataFromGithub, token })
   } catch (error) {
     console.log('error in the checkUserInDB: ', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+export const checkAuth = async (req, res, next) => {
+  try {
+    const token = req?.get('Authorization')
+    if (token) {
+      const user = await User.findOne({ token })
+      if (user) next()
+    } else {
+      return console.log('no token');
+    }
+  } catch (error) {
+    console.log('error in the checkAuth: ', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}

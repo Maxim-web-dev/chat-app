@@ -18,6 +18,10 @@ const UserSchema = new Schema({
   github_id: {
     type: Number,
     required: true
+  },
+  token: {
+    type: String,
+    required: true
   }
 });
 

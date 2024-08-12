@@ -17,7 +17,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-const PORT = process.env.PORT || 1111;
+const PORT = process.env.PORT || 1000;
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -44,7 +44,7 @@ process.on('SIGTERM', () => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, (req, res) => {
   connectToDB();
   console.log(`server running at port ${PORT}`);
 });
